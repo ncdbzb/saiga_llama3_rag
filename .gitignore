@@ -1,0 +1,54 @@
+pycache/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+env/
+venv/
+ENV/
+env.bak/
+venv.bak/
+*.egg-info/
+*.egg
+*.whl
+*.pyc
+*.pdb
+
+# PyCharm
+.idea/
+*.iml
+
+# VS Code
+.vscode/
+history/
+
+# Jupyter Notebook
+.ipynb_checkpoints
+
+# Log files
+*.log
+
+# Cache files
+*.cache
+*.tmp
+
+# Data files
+data/*.csv
+data/*.json
+data/*.txt
+data/logs.txt
+
+# Model files (если не хотите коммитить модели)
+model/*
+
+# specific libraries
+# Hugging Face Transformers
+transformers/
+# Accelerate
+accelerate/
+# bitsandbytes
+bitsandbytes/
+# ChromaDB
+chromadb/
+# Sentence Transformers
+sentence_transformers/
