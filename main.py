@@ -1,26 +1,49 @@
+import time
+from chroma_db import ChromaDB
+# from llm import LLM
+from prompt import get_prompt
+from logs.console_logger import console_logger
 
 
+LLM_NAME = "IlyaGusev/saiga_llama3_8b"
+# Existing collections: "datapk_2_1_rubert_tiny_turbo"
+COLLECTION_NAME = "datapk_2_1_rubert_tiny_turbo"  #WITHOUT EXTENSION
+EMBEDDING_MODEL_NAME = "sergeyzh/rubert-tiny-turbo"
+CHUNK_SIZE = 800
+TOP_K = 4
 
-EMBEDDING_MODEL_NAME = "all-MiniLM-L6-v2"
 
-
-def rag_with_chunks(query):
+def get_rag_response(user_query):
     # Ищем релевантные чанки
-    retrieved_chunk = similarity_search(collection, query)
+    chroma_db = ChromaDB(EMBEDDING_MODEL_NAME, CHUNK_SIZE)
+    retrieved_chunks = chroma_db.similarity_search(COLLECTION_NAME, user_query, top_k=TOP_K)
 
     # Создаем промпт с найденным контекстом
-    prompt = get_prompt(query, retrieved_chunk)
+    prompt = get_prompt(user_query, retrieved_chunks)
 
-    # Генерация ответа с помощью модели
-    data = tokenizer(prompt, return_tensors="pt", add_special_tokens=False)
-    data = {k: v.to(model.device) for k, v in data.items()}
-    output_ids = model.generate(**data, generation_config=generation_config)[0]
-    output_ids = output_ids[len(data["input_ids"][0]):]  # Убираем токены промпта
-    output = tokenizer.decode(output_ids, skip_special_tokens=True).strip()
+    #Делаем запрос к LLM
+    # llm = LLM(LLM_NAME)
+    # response = llm.call(prompt)
 
-    return output
+    return prompt
 
-# Пример запроса
-query = "Как осуществить установку и использование сервиса управления БД Adminer?"
-answer = rag_with_chunks(query)
-print(f"Ответ: {answer}")
+if __name__ == '__main__':
+    print("App started. Введите 'exit' для завершения.")
+    print(f'embedding model: {EMBEDDING_MODEL_NAME}')
+    print(f'collection name: {COLLECTION_NAME}')
+
+    while True:
+        query = input("Введите ваш вопрос: ")
+
+        if query.lower() in ['exit', 'quit', 'q']:
+            print("Завершение работы приложения.")
+            break
+
+        start_time = time.time()
+
+        # Получаем ответ от LLM (RAG)
+        answer = get_rag_response(query)
+
+        console_logger.info(f'Time: {time.time() - start_time}')
+
+        print(f"Ответ: {answer}\n\n")
