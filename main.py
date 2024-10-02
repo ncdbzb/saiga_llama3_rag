@@ -1,6 +1,6 @@
 import time
 from chroma_db import ChromaDB
-# from llm import LLM
+from llm import LLM
 from prompt import get_prompt
 from logs.console_logger import console_logger
 
@@ -21,11 +21,11 @@ def get_rag_response(user_query):
     # Создаем промпт с найденным контекстом
     prompt = get_prompt(user_query, retrieved_chunks)
 
-    #Делаем запрос к LLM
-    # llm = LLM(LLM_NAME)
-    # response = llm.call(prompt)
+    # Делаем запрос к LLM
+    llm = LLM(LLM_NAME)
+    response = llm.call(prompt)
 
-    return prompt
+    return response
 
 if __name__ == '__main__':
     print("App started. Введите 'exit' для завершения.")
